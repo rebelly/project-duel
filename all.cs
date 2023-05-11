@@ -202,7 +202,7 @@ namespace ConsoleApp1
                 Console.WriteLine($"По резульату жребия атакует сторона Тьмы, защищается сторона Света, ");
                 Console.WriteLine($"Боец {devil.Name}, Очки Здоровья: {devil.Health} Очки Атаки {devil.Attack}");
                 Console.WriteLine($"Боец {angel.Name}, суммарные Очки Обороны {angel.Health + angel.Defence}");
-                if (angel > devil) Console.WriteLine("Выиграла сторона тьмы");
+                if (angel < devil) Console.WriteLine("Выиграла сторона тьмы");
                 else Console.WriteLine("Выиграла сторона света");
             }
         }
