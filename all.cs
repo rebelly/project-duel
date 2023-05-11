@@ -251,7 +251,7 @@ namespace ConsoleApp1
                             }
                             else if (k == 2 & h_char & !alm_dead) throw new Exception("Как вы себе персдтавляете битву доспехов без их хозяина");
                             else if (k <= 2 & !h_char & deck1[j - 1].is_char) throw new Exception("Боюсь, ваши солдаты подерутся за аммуницию, во избежании этого предлагаю выбрать вам всего 1 карту персонажа");
-                            else if (k < 2 & h_char & deck1[j - 1].is_char) h_char = false;  // если перса нет, но его выбрали 
+                            else if (k < 2 & h_char & deck1[j - 1].is_char) h_char = false;  // если перса нет было, но его выбрали 
                             choise[k] = j - 1;
                             Console.Write("В качестве");
                             Console.ForegroundColor = ConsoleColor.Cyan;
