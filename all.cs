@@ -76,7 +76,17 @@ namespace ConsoleApp1
         {
             get { return name; }
         }
-    }
+      public static bool operator >(fighter fighter1, fighter fighter2){
+        if (fighter1.Health + fighter1.Defence > fighter1.Attack) return true;
+        else return false;
+        }
+        public static bool operator <(fighter fighter1, fighter fighter2) 
+       {
+        if (fighter1.Health + fighter1.Defence < fighter1.Attack) return true;
+        else return false; 
+       }
+}
+  
     class Game
     {
         private fighter angel;
@@ -116,6 +126,63 @@ namespace ConsoleApp1
             
 
         }
+        public static void Choise(out int[] choise, card[] deck1) // функция которая на выходе дает нам список 
+        {
+            int k = 0;
+            choise = new int[3];
+            string ch;
+            bool h_char = false;
+            bool alm_dead = false;
+            for (int i = 1; i < deck1.Length; i++)
+            {
+                if (deck1[i].is_char)
+                {
+                    h_char = true;
+                    break;
+                } // смотрим есть ли среди карт персы
+            } 
+            while (k < 3)
+            {
+                ch = Console.ReadLine();
+                try
+                {
+                    if (int.TryParse(ch, out int j))
+                    {
+                        if (j < deck1.Length) // можно выкинуть Exception со словами мол чет такой карты не вижу
+                        {
+                            if (h_char & deck1[j - 1].Name == "Задохлик")
+                            {
+                                Console.WriteLine($"В качестве одной из карт, вы выбрали карту Задохлика");
+                                Console.WriteLine("Вам разрешается взять в сумме ТРИ карты аммуниции ");
+                                h_char = false;
+                                alm_dead = true;
+                                continue;
+
+                            }
+                            else if (k == 2 & h_char & !alm_dead) throw new Exception("Как вы себе персдтавляете битву доспехов без их хозяина");
+                            else if (k <= 2 & !h_char & deck1[j - 1].is_char) throw new Exception("Боюсь, ваши солдаты подерутся за аммуницию, во избежании этого предлагаю выбрать вам всего 1 карту персонажа");
+                            else if (k < 2 & h_char & deck1[j - 1].is_char) h_char = false;  // если перса нет было, но его выбрали 
+                            choise[k] = j - 1;
+                            Console.Write("В качестве");
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write($" {k + 1} ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write($"карты, вы выбрали карту");
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write($" {deck1[j-1].Name} \n");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            k++;
+                        }
+                        else throw new Exception("Извините, такого номера карты нет");
+                    }
+                    else throw new Exception("Извините, такого номера карты нет");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+        }
         static int lot()
         {
             return rand.Next(0, 2); // кинули жребий
@@ -127,7 +194,7 @@ namespace ConsoleApp1
                 Console.WriteLine($"По резульату жребия атакует сторона Света, защищается сторона Тьмы ");
                 Console.WriteLine($"Боец {angel.Name}, Очки Здоровья: {angel.Health} Очки Атаки {angel.Attack}, ");
                  Console.WriteLine( $"Боец {devil.Name}, суммарные Очки Обороны {devil.Health+angel.Defence}");
-                if (angel.Attack >= devil.Health + devil.Defence) Console.WriteLine("Выиграла сторона Света");
+                if (angel > devil) Console.WriteLine("Выиграла сторона Света");
                 else Console.WriteLine("Выиграла сторона Тьмы");
             }
             else //нападают демоны
@@ -135,7 +202,7 @@ namespace ConsoleApp1
                 Console.WriteLine($"По резульату жребия атакует сторона Тьмы, защищается сторона Света, ");
                 Console.WriteLine($"Боец {devil.Name}, Очки Здоровья: {devil.Health} Очки Атаки {devil.Attack}");
                 Console.WriteLine($"Боец {angel.Name}, суммарные Очки Обороны {angel.Health + angel.Defence}");
-                if (devil.Attack >= angel.Health + angel.Defence) Console.WriteLine("Выиграла сторона тьмы");
+                if (angel > devil) Console.WriteLine("Выиграла сторона тьмы");
                 else Console.WriteLine("Выиграла сторона света");
             }
         }
@@ -216,63 +283,7 @@ namespace ConsoleApp1
     class Program
         
     {
-        static void Choise(out int[] choise, card[] deck1) // функция которая на выходе дает нам список 
-        {
-            int k = 0;
-            choise = new int[3];
-            string ch;
-            bool h_char = false;
-            bool alm_dead = false;
-            for (int i = 1; i < deck1.Length; i++)
-            {
-                if (deck1[i].is_char)
-                {
-                    h_char = true;
-                    break;
-                } // смотрим есть ли среди карт персы
-            } 
-            while (k < 3)
-            {
-                ch = Console.ReadLine();
-                try
-                {
-                    if (int.TryParse(ch, out int j))
-                    {
-                        if (j < deck1.Length) // можно выкинуть Exception со словами мол чет такой карты не вижу
-                        {
-                            if (h_char & deck1[j - 1].Name == "Задохлик")
-                            {
-                                Console.WriteLine($"В качестве одной из карт, вы выбрали карту Задохлика");
-                                Console.WriteLine("Вам разрешается взять в сумме ТРИ карты аммуниции ");
-                                h_char = false;
-                                alm_dead = true;
-                                continue;
-
-                            }
-                            else if (k == 2 & h_char & !alm_dead) throw new Exception("Как вы себе персдтавляете битву доспехов без их хозяина");
-                            else if (k <= 2 & !h_char & deck1[j - 1].is_char) throw new Exception("Боюсь, ваши солдаты подерутся за аммуницию, во избежании этого предлагаю выбрать вам всего 1 карту персонажа");
-                            else if (k < 2 & h_char & deck1[j - 1].is_char) h_char = false;  // если перса нет было, но его выбрали 
-                            choise[k] = j - 1;
-                            Console.Write("В качестве");
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write($" {k + 1} ");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write($"карты, вы выбрали карту");
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write($" {deck1[j-1].Name} \n");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            k++;
-                        }
-                        else throw new Exception("Извините, такого номера карты нет");
-                    }
-                    else throw new Exception("Извините, такого номера карты нет");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-            }
-        }
+        
         static void Main()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -307,7 +318,7 @@ namespace ConsoleApp1
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Если вы решаете отправить в бой 'голого' персонажа ЗАДОХЛИКА, то вам разрешается взять ТРИ карты аммуници");
             int[] choise_ang;
-            Choise(out choise_ang, deck_ang);
+            Game.Choise(out choise_ang, deck_ang);
             Console.WriteLine();
             Console.WriteLine("На бой от сил света отправится, а также возьмет с собой такую амуницию :");
             Console.ForegroundColor = ConsoleColor.White;
@@ -335,7 +346,7 @@ namespace ConsoleApp1
             Console.WriteLine("Если вы решаете отправить в бой 'голого' персонажа ЗАДОХЛИКА, то вам разрешается взять ТРИ карты аммуници");
             Game.print_deck(deck_dev);
             int[] choise_dev;
-            Choise(out choise_dev, deck_dev);
+            Game.Choise(out choise_dev, deck_dev);
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("На бой от сил тьмы отправится, а также возьмет с собой такую амуницию :");
